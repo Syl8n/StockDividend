@@ -1,5 +1,6 @@
-package com.zerobase.stockdividend.web.persist.entity;
+package com.zerobase.stockdividend.persist.entity;
 
+import com.zerobase.stockdividend.model.CompanyDto;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,4 +25,11 @@ public class Company {
     private String ticker;
 
     private String name;
+
+    public static Company from(CompanyDto companyDto){
+        return Company.builder()
+            .name(companyDto.getName())
+            .ticker(companyDto.getTicker())
+            .build();
+    }
 }
