@@ -10,7 +10,9 @@ import com.zerobase.stockdividend.scrapper.Scrapper;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.Trie;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -19,6 +21,7 @@ import org.springframework.util.ObjectUtils;
 @RequiredArgsConstructor
 public class CompanyService {
 
+    private final Trie trie;
     private final Scrapper scrapper;
     private final CompanyRepository companyRepository;
     private final DividendRepository dividendRepository;
@@ -33,6 +36,26 @@ public class CompanyService {
 
     public Page<Company> getAllCompany(Pageable pageable){
         return companyRepository.findAll(pageable);
+    }
+
+    public void addAutoCompleteKeyword(String keyword){
+        trie.put(keyword, null);
+    }
+
+    public List<String> autoComplete(String keyword, int maxSize){
+        return (List<String>) trie.prefixMap(keyword).keySet()
+            .stream().limit(maxSize).collect(Collectors.toList());
+    }
+
+    public void deleteAutoCompleteKeyword(String keyword){
+        trie.remove(keyword);
+    }
+
+    public List<String> getCompanyNamesByKeyword(String keyword){
+        Pageable limit = PageRequest.of(0, 10);
+        return companyRepository.findByNameStartingWithIgnoreCase(keyword, limit).stream()
+            .map(Company::getName)
+            .collect(Collectors.toList());
     }
 
     private CompanyDto storeCompanyAndDividend(String ticker){

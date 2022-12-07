@@ -25,7 +25,8 @@ public class CompanyController {
 
     @GetMapping("/autucomplete")
     public ResponseEntity<?> autocomplete(@RequestParam String keyword) {
-        return null;
+        var result = companyService.getCompanyNamesByKeyword(keyword);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping
@@ -42,6 +43,7 @@ public class CompanyController {
         }
 
         CompanyDto companyDto = companyService.save(ticker);
+        companyService.addAutoCompleteKeyword(companyDto.getName());
         return ResponseEntity.ok(companyDto);
     }
 
