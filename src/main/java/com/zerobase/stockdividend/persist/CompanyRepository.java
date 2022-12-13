@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface CompanyRepository extends JpaRepository<Company, Long> {
     boolean existsByTicker(String ticker);
     Optional<Company> findByName(String name);
+    Optional<Company> findByTicker(String ticker);
 
     Page<Company> findByNameStartingWithIgnoreCase(String s, Pageable pageable);
 }
