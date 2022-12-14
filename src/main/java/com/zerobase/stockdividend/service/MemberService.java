@@ -26,7 +26,7 @@ public class MemberService implements UserDetailsService {
 
     public MemberEntity register(Auth.SignUp member){
         if(memberRepository.existsByUsername(member.getUsername())){
-            throw new AlreadyExistUserException();
+            throw new AlreadyExistUserException(member.getUsername());
         }
 
         member.setPassword(passwordEncoder.encode(member.getPassword()));

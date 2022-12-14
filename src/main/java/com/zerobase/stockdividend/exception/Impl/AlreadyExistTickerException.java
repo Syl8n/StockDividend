@@ -5,9 +5,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @NoArgsConstructor
-public class NoCompanyException extends AbstractException {
+public class AlreadyExistTickerException extends AbstractException {
 
-    public NoCompanyException(String message) {
+    public AlreadyExistTickerException(String message) {
         super(message);
     }
 
@@ -18,6 +18,6 @@ public class NoCompanyException extends AbstractException {
 
     @Override
     public String getMessage() {
-        return "존재하지 않는 회사명입니다 -> " + super.getMessage();
+        return "이미 추가된 ticker입니다 -> " + super.getMessage();
     }
 }

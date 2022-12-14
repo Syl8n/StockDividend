@@ -1,5 +1,7 @@
 package com.zerobase.stockdividend.service;
 
+import com.zerobase.stockdividend.exception.Impl.AlreadyExistTickerException;
+import com.zerobase.stockdividend.exception.Impl.NotExistTickerException;
 import com.zerobase.stockdividend.model.CompanyDto;
 import com.zerobase.stockdividend.model.ScrappedResult;
 import com.zerobase.stockdividend.persist.CompanyRepository;
@@ -31,7 +33,7 @@ public class CompanyService {
     public CompanyDto save(String ticker){
         boolean exists = companyRepository.existsByTicker(ticker);
         if(exists){
-            throw new RuntimeException("Ticker already exists -> " + ticker);
+            throw new AlreadyExistTickerException(ticker);
         }
         return storeCompanyAndDividend(ticker);
     }
@@ -44,10 +46,10 @@ public class CompanyService {
         trie.put(keyword, null);
     }
 
-    public List<String> autoComplete(String keyword, int maxSize){
-        return (List<String>) trie.prefixMap(keyword).keySet()
-            .stream().limit(maxSize).collect(Collectors.toList());
-    }
+//    public List<String> autoComplete(String keyword, int maxSize){
+//        return (List<String>) trie.prefixMap(keyword).keySet()
+//            .stream().limit(maxSize).collect(Collectors.toList());
+//    }
 
     public void deleteAutoCompleteKeyword(String keyword){
         trie.remove(keyword);
@@ -64,7 +66,7 @@ public class CompanyService {
         // 스크래핑
         CompanyDto companyDto = scrapper.scrapCompanyByTicker(ticker);
         if(ObjectUtils.isEmpty(companyDto)){
-            throw new RuntimeException("failed to scrap ticker -> " + ticker);
+            throw new NotExistTickerException(ticker);
         }
 
         // 회사가 있다면, 배당금 정보를 스크래핑
@@ -84,7 +86,7 @@ public class CompanyService {
 
     public String deleteCompany(String ticker) {
         var company = companyRepository.findByTicker(ticker)
-            .orElseThrow(() -> new RuntimeException("존재하지 않는 회사입니다"));
+            .orElseThrow(() -> new NotExistTickerException(ticker));
 
         dividendRepository.deleteAllByCompanyId(company.getId());
         companyRepository.delete(company);
