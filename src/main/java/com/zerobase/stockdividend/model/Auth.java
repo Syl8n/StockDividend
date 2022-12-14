@@ -1,5 +1,6 @@
 package com.zerobase.stockdividend.model;
 
+import com.zerobase.stockdividend.persist.entity.MemberEntity;
 import java.util.List;
 import lombok.Data;
 

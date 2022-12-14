@@ -1,7 +1,8 @@
 package com.zerobase.stockdividend.service;
 
+import com.zerobase.stockdividend.exception.Impl.AlreadyExistUserException;
 import com.zerobase.stockdividend.model.Auth;
-import com.zerobase.stockdividend.model.MemberEntity;
+import com.zerobase.stockdividend.persist.entity.MemberEntity;
 import com.zerobase.stockdividend.persist.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,12 +21,12 @@ public class MemberService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return memberRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("couldn't find user -> " + username));
+            .orElseThrow(() -> new RuntimeException("존재하지 않는 ID 입니다"));
     }
 
     public MemberEntity register(Auth.SignUp member){
         if(memberRepository.existsByUsername(member.getUsername())){
-            throw new RuntimeException("이미 사용 중인 아이디입니다.");
+            throw new AlreadyExistUserException();
         }
 
         member.setPassword(passwordEncoder.encode(member.getPassword()));

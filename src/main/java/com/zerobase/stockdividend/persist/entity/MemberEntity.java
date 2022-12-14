@@ -1,4 +1,4 @@
-package com.zerobase.stockdividend.model;
+package com.zerobase.stockdividend.persist.entity;
 
 import com.zerobase.stockdividend.converter.MemberConverter;
 import java.util.Collection;
