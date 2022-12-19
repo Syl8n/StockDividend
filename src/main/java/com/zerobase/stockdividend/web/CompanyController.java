@@ -28,7 +28,7 @@ public class CompanyController {
     private final CompanyService companyService;
     private final CacheManager redisCacheManager;
 
-    @GetMapping("/autucomplete")
+    @GetMapping("/autocomplete")
     public ResponseEntity<?> autocomplete(@RequestParam String keyword) {
         var result = companyService.getCompanyNamesByKeyword(keyword);
         return ResponseEntity.ok(result);
